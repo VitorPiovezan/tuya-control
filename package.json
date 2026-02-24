@@ -5,6 +5,10 @@
   "type": "module",
   "scripts": {
     "control": "node control.mjs",
+    "on": "node control.mjs on",
+    "off": "node control.mjs off",
+    "toggle": "node control.mjs toggle",
+    "status": "node control.mjs status",
     "discover": "node discover.mjs",
     "scan": "node scan.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"

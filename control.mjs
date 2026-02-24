@@ -29,6 +29,25 @@ function findDevice(devices, name) {
   process.exit(1);
 }
 
+function findBooleanDps(data) {
+  if (!data || typeof data !== 'object') return null;
+  const dps = data.dps || data;
+  for (const [id, val] of Object.entries(dps)) {
+    if (typeof val === 'boolean') return id;
+  }
+  return null;
+}
+
+function parseCurrentState(data, dpsId) {
+  if (data === undefined || data === null) return undefined;
+  if (typeof data === 'boolean') return data;
+  if (typeof data === 'object' && data.dps) {
+    const d = data.dps;
+    return d[dpsId] ?? d['1'] ?? d['20'] ?? Object.values(d).find(v => typeof v === 'boolean');
+  }
+  return undefined;
+}
+
 const action = process.argv[2];
 const deviceName = process.argv[3];
 
@@ -40,19 +59,40 @@ if (!action || !['on', 'off', 'toggle', 'status'].includes(action)) {
 const devices = loadDevices();
 const dev = findDevice(devices, deviceName);
 
+const version = dev.version || '3.3';
 const device = new TuyAPI({
   id: dev.id,
   key: dev.key,
   ip: dev.ip,
-  version: dev.version || '3.3',
+  version,
+  issueGetOnConnect: false,
 });
 
 try {
-  await device.find();
+  if (dev.ip) {
+    await device.find();
+  }
   await device.connect();
 
-  const data = await device.get({ dps: 1 });
-  const currentState = data;
+  let switchDps = '1';
+  try {
+    const fullState = await device.get({ schema: true });
+    const detected = findBooleanDps(fullState);
+    if (detected) switchDps = detected;
+  } catch (_) {
+    try {
+      await device.get({ dps: 1 });
+      switchDps = '1';
+    } catch (_) {
+      try {
+        await device.get({ dps: 20 });
+        switchDps = '20';
+      } catch (_) {}
+    }
+  }
+
+  const rawData = await device.get({ dps: switchDps });
+  const currentState = parseCurrentState(rawData, switchDps);
 
   if (action === 'status') {
     console.log(currentState ? 'ON' : 'OFF');
@@ -63,17 +103,19 @@ try {
   let newState;
   if (action === 'on') newState = true;
   else if (action === 'off') newState = false;
-  else newState = !currentState;
+  else newState = currentState === undefined ? true : !currentState;
 
-  await device.set({ dps: 1, set: newState });
+  const dpsNum = typeof switchDps === 'string' ? switchDps : String(switchDps);
+  await device.set({ dps: dpsNum, set: newState });
+
+  await new Promise(r => setTimeout(r, 300));
   console.log(newState ? 'ON' : 'OFF');
-
-  setTimeout(() => {
-    device.disconnect();
-    process.exit(0);
-  }, 1000);
+  device.disconnect();
+  process.exit(0);
 } catch (e) {
   console.error('Error:', e.message);
-  try { device.disconnect(); } catch (x) {}
+  try {
+    device.disconnect();
+  } catch (x) {}
   process.exit(1);
 }
