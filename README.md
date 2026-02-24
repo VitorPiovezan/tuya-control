@@ -38,7 +38,7 @@ Para controlar os dispositivos localmente e preciso obter o **Device ID** e a **
 
 ### 4. Ver Device ID e Local Key
 
-- No projeto, vá em **All Devices** (ou **Devices**). Cada dispositivo aparece com **Device ID** (vem no formato longo, ex: `eb0f6b37d7653aede5syao`).
+- No projeto, vá em **All Devices** (ou **Devices**). Cada dispositivo aparece com **Device ID** (vem no formato longo, ex: `seu codigo`).
 - O **Device ID** tambem pode ser visto no app: toque no dispositivo > icone de editar / engrenagem > **Device information**.
 - A **Local Key** nao aparece no app. Ela e obtida pela API da Tuya:
   - No **Overview** do projeto voce tem **Access ID** (Client ID) e **Access Secret** (Client Secret).
@@ -102,10 +102,10 @@ TUYA_DEVICES_PATH=/caminho/para/meus-devices.json node control.mjs on
 
 ## Scripts
 
-| Script       | Descricao                          |
-|-------------|-------------------------------------|
-| `pnpm run control` | Atalho para `node control.mjs` (passar args: on/off/toggle/status [device]) |
-| `pnpm run discover` | Descobre dispositivos na rede (find) |
+| Script              | Descricao                                                                   |
+| ------------------- | --------------------------------------------------------------------------- |
+| `pnpm run control`  | Atalho para `node control.mjs` (passar args: on/off/toggle/status [device]) |
+| `pnpm run discover` | Descobre dispositivos na rede (find)                                        |
 
 ## Estrutura do devices.json
 
