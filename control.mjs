@@ -48,8 +48,9 @@ function parseCurrentState(data, dpsId) {
   return undefined;
 }
 
-const action = process.argv[2];
-const deviceName = process.argv[3];
+const args = (process.argv.slice(2) || []).filter(a => a !== '--');
+const action = args[0];
+const deviceName = args[1];
 
 if (!action || !['on', 'off', 'toggle', 'status'].includes(action)) {
   console.log('Usage: node control.mjs <on|off|toggle|status> [device-name-or-id]');
