@@ -1,0 +1,14 @@
+node_modules/
+devices.json
+.env
+.env.*
+!.env.example
+*.log
+ekaza_creds.json
+devices_with_keys.json
+ekaza_devices.json
+__pycache__/
+.venv/
+venv/
+.tool-versions
+.DS_Store

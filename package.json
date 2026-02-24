@@ -1,0 +1,20 @@
+{
+  "name": "tuya-control",
+  "version": "1.0.0",
+  "description": "Controle de dispositivos Tuya (lampadas/smart home) via rede local",
+  "type": "module",
+  "scripts": {
+    "control": "node control.mjs",
+    "discover": "node discover.mjs",
+    "scan": "node scan.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["tuya", "smart-home", "iot"],
+  "license": "ISC",
+  "packageManager": "pnpm@10.19.0",
+  "dependencies": {
+    "@tuyapi/cli": "^1.18.3",
+    "@tuyapi/cloud": "^0.6.2",
+    "tuyapi": "^7.7.1"
+  }
+}
